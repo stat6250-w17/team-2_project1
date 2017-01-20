@@ -27,9 +27,38 @@ TH))-%length(%sysget(SAS_EXECFILENAME))))""";
 Research Question 1: What's the difference between the mean scores of students who 
 are economically disadvantaged and those who are not?
 
+Rationale: This should help us identify what's the economic status impact on the 
+test score and see how big it is
+
 Methodology: Use PROC MEANS to compute the mean scores for the data input of data-
 set and output the results to a temporary dataset. Use PROC SORT extract and sort 
-just the means the temporary data-set, and use PROC PRINT to print just the subset 
+just the means the temporary dataset, and use PROC PRINT to print just the subset 
 of students who are economically disadvantaged and those who are not disadvantaged
 
-Rationale: What's the economic status effect on the test score? 
+*
+Research Question 2: Is the economics status has the same impact across different 
+ethnicities? 
+
+Rationale: By controlling one factor ethinicity, this is to help us identify if there
+is any difference of economic status' impact on ethnicities and by comparing 
+the result of different ethnicities, we can see which ethinicity is affected by the
+economic status the most
+
+Methodology: Use PROC MEANS to compute the mean scores for the data input of dataset 
+and output the results to a temporary dataset. Use PROC SORT extract and sort just 
+the means the temporary dataset, and use PROC PRINT to print just the results of the 
+subsets of students who are economically disadvantaged and those who are not. Then 
+compare the result. 
+
+*
+Research Question 3: Which of the areas (arts or science subject) does it impact the 
+most due to economic status? 
+
+Rationale: Through this, we can identify which area of study is impacted the most by
+the economic status 
+
+Methodology: Use PROC MEANS to compute the mean scores for the data input of dataset 
+and output the results to a temporary dataset. Use PROC SORT extract and sort just 
+the means the temporary dataset, and use PROC PRINT to print just the results of the 
+subsets of students who are economically disadvantaged and those who are not. Then 
+compare the result of economic impact on different subjects. 
