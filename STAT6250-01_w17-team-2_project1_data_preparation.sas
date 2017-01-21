@@ -92,13 +92,13 @@ RUN;
 /* Using Proc SQL, create an analytic dataset that will be used for each of the analysis
    questions. This query uses the SQL statement to combine(using UNION) data for years 2015 and 2016 
    and pulls in the subgroup, test, school name etc lookup worksheets to provide all
-   necessary columns in a single dataset  named 'CAASP_TEST_RESULT_COMBINED'. 
+   necessary columns in a single dataset  named 'CAASP1516_analytic_file'. 
    Note to team 2: The analysis code files reference this dataset name in 
    PROC MEAN, PROC SORT.
 */
 
 PROC SQL;
-CREATE TABLE CAASP_TEST_RESULT_COMBINED
+CREATE TABLE CAASP1516_analytic_file
 Select 
 'Alameda County' as County, /* */
 'Fremont Unified School District' as 'District_Name',
