@@ -35,7 +35,91 @@ set and output the results to a temporary dataset. Use PROC SORT extract and sor
 just the means the temporary dataset, and use PROC PRINT to print just the subset 
 of students who are economically disadvantaged and those who are not disadvantaged
 
+* ---Code Block------;
+
+/*for Test ID 1 - English/Languge Arts*/
+
+proc means mean onprint data=CAASP1516_analytic_file;
+           class subgroupID=31;
+           var Area_1_Percentage_Above_Standard,
+           Area_1_Percentage_Near_Standard,
+           Area_1_Percentage_Below_Standard,
+           Area_2_Percentage_Above_Standard,
+           Area_2_Percentage_Near_Standard,
+           Area_2_Percentage_Below_Standard,
+           Area_3_Percentage_Above_Standard,
+           Area_3_Percentage_Near_Standard,
+           Area_3_Percentage_Below_Standard,
+           Area_4_Percentage_Above_Standard,
+           Area_4_Percentage_Near_Standard,
+           Area_4_Percentage_Below_Standard
+           ;
+           
+           output out=CAASP1516_analytic_file_temp;
+run;
+    
+    proc means mean onprint data=CAASP1516_analytic_file;
+           class subgroupID=111;
+           var Area_1_Percentage_Above_Standard,
+           Area_1_Percentage_Near_Standard,
+           Area_1_Percentage_Below_Standard,
+           Area_2_Percentage_Above_Standard,
+           Area_2_Percentage_Near_Standard,
+           Area_2_Percentage_Below_Standard,
+           Area_3_Percentage_Above_Standard,
+           Area_3_Percentage_Near_Standard,
+           Area_3_Percentage_Below_Standard,
+           Area_4_Percentage_Above_Standard,
+           Area_4_Percentage_Near_Standard,
+           Area_4_Percentage_Below_Standard
+           ;
+           
+           output out=CAASP1516_analytic_file_temp;
+run;
+    
+    
+/*for Test ID 2 - Mathematics*/
+
+proc means mean onprint data=CAASP1516_analytic_file;
+           class subgroupID=31;
+           var Area_1_Percentage_Above_Standard,
+           Area_1_Percentage_Near_Standard,
+           Area_1_Percentage_Below_Standard,
+           Area_2_Percentage_Above_Standard,
+           Area_2_Percentage_Near_Standard,
+           Area_2_Percentage_Below_Standard,
+           Area_3_Percentage_Above_Standard,
+           Area_3_Percentage_Near_Standard,
+           Area_3_Percentage_Below_Standard,
+           Area_4_Percentage_Above_Standard,
+           Area_4_Percentage_Near_Standard,
+           Area_4_Percentage_Below_Standard
+           ;
+           
+           output out=CAASP1516_analytic_file_temp;
+run;
+ 
+proc means mean onprint data=CAASP1516_analytic_file;
+           class subgroupID=111;
+           var Area_1_Percentage_Above_Standard,
+           Area_1_Percentage_Near_Standard,
+           Area_1_Percentage_Below_Standard,
+           Area_2_Percentage_Above_Standard,
+           Area_2_Percentage_Near_Standard,
+           Area_2_Percentage_Below_Standard,
+           Area_3_Percentage_Above_Standard,
+           Area_3_Percentage_Near_Standard,
+           Area_3_Percentage_Below_Standard,
+           Area_4_Percentage_Above_Standard,
+           Area_4_Percentage_Near_Standard,
+           Area_4_Percentage_Below_Standard
+           ;
+           
+           output out=CAASP1516_analytic_file_temp;
+run;
+
 *
+
 Research Question 2: Is the economics status has the same impact across different 
 ethnicities? 
 
