@@ -2,7 +2,7 @@
 
 * 
 This file prepares the dataset described below for analysis.
-Dataset Name: CAASP Test Results for English language arts/literacy and Mathematics for Alameda county for years 2015 and 2016 (2 separate datasets)
+Dataset Name: CAASP Test Results for English language arts/literacy and Mathematics for Fremont Unified School District for Alameda county for years 2015 and 2016 (2 separate datasets)
 
 Experimental Units: Test result for each type of test for each school in Alameda 
 Number of Observations 14431 (2015) and 13952 (2016)
@@ -26,35 +26,165 @@ https://github.com/stat6250/team-2_project1/CAASP_Test_Results_2015_2016.xlsx
 
 
 * load raw CAASP dataset from GitHub repository for use in the DATA step;
-filename CAASPtemp TEMP;
-proc http
-    method="get" 
-    url="&inputDatasetURL." 
-    out=CAASPtemp
-    ;
-run;
-proc import
-    file=CAASPtemp
-    out=CAASP1516_raw
-    dbms=xls
-    ;
-run;
-filename CAASPtemp clear;
-
-* check raw CAASP dataset for duplicates with respect to its composite key;
-proc sort nodupkey data=CAASP1516_raw dupout=CAASP1516_raw_dups out=_null_;
-    by CountyCode   DistrictCode   SchoolCode   TestYear   SubgroupID   Grade   Test ID;
-run;
+/*Import each of the worksheets from the XLSX files into SAS as a separate dataset*/
+*CAASP Test Results 2015;
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
+OUT= WORK.CAASP_test_result_2015
+DBMS=XLSX
+REPLACE;
+SHEET="CAASP_Test_result_2015"; 
+GETNAMES=YES;
+RUN;
 
 
-* Create analytic dataset template from CAASP xls, by pulling test and subgroup descriptions into a single dataset to be used for analysis;
-data CAASP1516_analytic_file;
-    retain
-/*list order of columns - to be completed*/
-    ;
-    keep
-/* Select columns for the analytics dataset - to be completed*/
-    ;
-    set CAASP1516_raw;
-run;
 
+/*CAASP Test Results 2016*/
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
+OUT= WORK.CAASP_test_result_2016
+DBMS=XLSX
+REPLACE;
+SHEET="CAASP_Test_result_2016"; 
+GETNAMES=YES;
+RUN;
+
+
+/*Test code worksheet*/
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
+OUT= WORK.Test
+DBMS=XLSX
+REPLACE;
+SHEET="Test"; 
+GETNAMES=YES;
+RUN;
+
+
+/*Subgroup code worksheet*/
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
+OUT= WORK.Subgroup
+DBMS=XLSX
+REPLACE;
+SHEET="Subgroup"; 
+GETNAMES=YES;
+RUN;
+
+
+/*AreaKey code worksheet*/
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
+OUT= WORK.AreaKey
+DBMS=XLSX
+REPLACE;
+SHEET="AreaKey"; 
+GETNAMES=YES;
+RUN;
+
+
+/*School code worksheet*/
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
+OUT= WORK.School
+DBMS=XLSX
+REPLACE;
+SHEET="School"; 
+GETNAMES=YES;
+RUN;
+
+
+
+/* Using Proc SQL, create an analytic dataset that will be used for each of the analysis
+   questions. This query uses the SQL statement to combine(using UNION) data for years 2015 and 2016 
+   and pulls in the subgroup, test, school name etc lookup worksheets to provide all
+   necessary columns in a single dataset  named 'CAASP_TEST_RESULT_COMBINED'. 
+   Note to team 2: The analysis code files reference this dataset name in 
+   PROC MEAN, PROC SORT.
+*/
+
+PROC SQL;
+CREATE TABLE CAASP_TEST_RESULT_COMBINED
+Select 
+'Alameda County' as County, /* */
+'Fremont Unified School District' as 'District_Name',
+a.School_Code', e.School_name,
+a.Test_Year',
+a.Subgroup_ID', c.SubgroupDescription, c.SubgroupCategory,
+a.Test_Type',
+a.Total_CAASPP_Enrollment',
+a.Total_Tested_At_Entity_Level',
+a.Total_Tested_with_Scores',
+a.Grade',
+a.Test_Id',b.TestName,
+a.CAASPP_Reported_Enrollment',
+a.Students_Tested',
+a.Mean_Scale_Score',
+a.Percentage_Standard_Exceeded',
+a.Percentage_Standard_Met',
+a.Percentage_Standard_Met_and_Above',
+a.Percentage_Standard_Nearly_Met',
+a.Percentage_Standard_Not_Met',
+a.Students_with_Scores',
+a.Area_1_Percentage_Above_Standard',
+a.Area_1_Percentage_Near_Standard',
+a.Area_1_Percentage_Below_Standard',
+a.Area_2_Percentage_Above_Standard',
+a.Area_2_Percentage_Near_Standard',
+a.Area_2_Percentage_Below_Standard',
+a.Area_3_Percentage_Above_Standard',
+a.Area_3_Percentage_Near_Standard',
+a.Area_3_Percentage_Below_Standard',
+a.Area_4_Percentage_Above_Standard',
+a.Area_4_Percentage_Near_Standard',
+a.Area_4_Percentage_Below_Standard'
+
+from CAASP_Test_Result_2015 a,
+     Test b,
+     Subgroup c,
+     AreaKey d,
+     School e
+Where a.test_id = b.test_id,
+and   a.subgroup_ID = c.subgroup_ID
+and   a.school_code = e.school_code ;
+
+UNION
+
+Select 
+'Alameda County' as County, /* */
+'Fremont Unified School District' as 'District_Name',
+a.School_Code', e.School_name,
+a.Test_Year',
+a.Subgroup_ID', c.SubgroupDescription, c.SubgroupCategory,
+a.Test_Type',
+a.Total_CAASPP_Enrollment',
+a.Total_Tested_At_Entity_Level',
+a.Total_Tested_with_Scores',
+a.Grade',
+a.Test_Id',b.TestName,
+a.CAASPP_Reported_Enrollment',
+a.Students_Tested',
+a.Mean_Scale_Score',
+a.Percentage_Standard_Exceeded',
+a.Percentage_Standard_Met',
+a.Percentage_Standard_Met_and_Above',
+a.Percentage_Standard_Nearly_Met',
+a.Percentage_Standard_Not_Met',
+a.Students_with_Scores',
+a.Area_1_Percentage_Above_Standard',
+a.Area_1_Percentage_Near_Standard',
+a.Area_1_Percentage_Below_Standard',
+a.Area_2_Percentage_Above_Standard',
+a.Area_2_Percentage_Near_Standard',
+a.Area_2_Percentage_Below_Standard',
+a.Area_3_Percentage_Above_Standard',
+a.Area_3_Percentage_Near_Standard',
+a.Area_3_Percentage_Below_Standard',
+a.Area_4_Percentage_Above_Standard',
+a.Area_4_Percentage_Near_Standard',
+a.Area_4_Percentage_Below_Standard'
+
+from CAASP_Test_Result_2016 a,
+     Test b,
+     Subgroup c,
+     AreaKey d,
+     School e
+Where a.test_id = b.test_id,
+and   a.subgroup_ID = c.subgroup_ID
+and   a.school_code = e.school_code ;
+
+QUIT;
