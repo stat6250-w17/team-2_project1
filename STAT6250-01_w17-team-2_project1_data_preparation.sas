@@ -26,19 +26,9 @@ https://github.com/stat6250/team-2_project1/CAASP_Test_Results_2015_2016.xlsx
 
 
 * load raw CAASP dataset from GitHub repository for use in the DATA step;
-filename CAASPtemp TEMP;
-PROC HTTP
-    method="get" 
-    url="&inputDatasetURL." 
-    out=CAASPtemp
-    ;
-run;
-
-
-
 /*Import each of the worksheets from the XLSX files into SAS as a separate dataset*/
 *CAASP Test Results 2015;
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
 OUT= WORK.CAASP_test_result_2015
 DBMS=XLSX
 REPLACE;
@@ -49,7 +39,7 @@ RUN;
 
 
 /*CAASP Test Results 2016*/
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
 OUT= WORK.CAASP_test_result_2016
 DBMS=XLSX
 REPLACE;
@@ -59,7 +49,7 @@ RUN;
 
 
 /*Test code worksheet*/
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
 OUT= WORK.Test
 DBMS=XLSX
 REPLACE;
@@ -69,7 +59,7 @@ RUN;
 
 
 /*Subgroup code worksheet*/
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
 OUT= WORK.Subgroup
 DBMS=XLSX
 REPLACE;
@@ -79,7 +69,7 @@ RUN;
 
 
 /*AreaKey code worksheet*/
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
 OUT= WORK.AreaKey
 DBMS=XLSX
 REPLACE;
@@ -89,7 +79,7 @@ RUN;
 
 
 /*School code worksheet*/
-PROC IMPORT FILE = CAASPtemp
+PROC IMPORT DATAFILE= "&inputDatasetURL." 
 OUT= WORK.School
 DBMS=XLSX
 REPLACE;
@@ -97,9 +87,6 @@ SHEET="School";
 GETNAMES=YES;
 RUN;
 
-
-filename CAASPtemp clear; /*clear the fileref created for the 	    
-                            input xls file*/
 
 
 /* Using Proc SQL, create an analytic dataset that will be used for each of the analysis
