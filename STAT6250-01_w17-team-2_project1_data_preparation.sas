@@ -14,9 +14,9 @@ http://caaspp.cde.ca.gov/SB2016/ResearchFileList?ps=true&lstTestType=B&lstCounty
 
 Notes for creating the xls file: Download the test data (CSV format) for year 2015 & 2016. Also download the Entity(schools) data and, the lookup tables Test and Subgroups data for each year. Add an Area N key to explain the various Area n scores in teh dataset.
 
-Data Dictionary: The column names are self-explanatory in the data and can be seen when opened in Excel. Descriptions for the ‘Area n’ fields can be obtained at http://caaspp.cde.ca.gov/sb2016/UnderstandingCAASPPReports
+Data Dictionary: The column names are self-explanatory in the data and can be seen when opened in Excel. Descriptions for the â€˜Area nâ€™ fields can be obtained at http://caaspp.cde.ca.gov/sb2016/UnderstandingCAASPPReports
 
-Unique ID:  The columns ‘CountyCode + DistrictCode + SchoolCode + TestYear + SubgroupID + Grade + Test ID’ together form the primary key.
+Unique ID:  The columns â€˜CountyCode + DistrictCode + SchoolCode + TestYear + SubgroupID + Grade + Test IDâ€™ together form the primary key.
 ;
 
 * setup environmental parameters;
@@ -26,11 +26,12 @@ https://github.com/stat6250/team-2_project1/CAASP_Test_Results_2015_2016.xlsx
 
 
 * load raw CAASP dataset from GitHub repository for use in the DATA step;
-filename CAASPtemp TEMP;
+filename CAASPtmp "%sysfunc(getoption(work))/caasptmp.xlsx";
+
 PROC HTTP
     method="get" 
-    url="&inputDatasetURL." 
-    out=CAASPtemp
+    url="http://github.com/stat6250/team-2_project1/raw/master/CAASP_Test_Results_2015_2016.xlsx" 
+    out=CAASPtmp
     ;
 run;
 
@@ -38,14 +39,15 @@ run;
 
 /*Import each of the worksheets from the XLSX files into SAS as a separate dataset*/
 *CAASP Test Results 2015;
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT FILE=CAASPtmp  
 OUT= WORK.CAASP_test_result_2015
 DBMS=XLSX
 REPLACE;
-SHEET="CAASP_Test_result_2015"; 
+SHEET="CAASP Test Results 2015"; 
 GETNAMES=YES;
-RUN;
 
+;
+RUN;
 
 
 /*CAASP Test Results 2016*/
