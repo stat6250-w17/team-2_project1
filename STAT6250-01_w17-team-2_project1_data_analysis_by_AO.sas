@@ -1,3 +1,4 @@
+@@ -1 +1,57 @@
 
 *******************************************************************************;
 **************** 80-character banner for column width reference ***************;
@@ -24,34 +25,114 @@ X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,
 
 
 *
-Research Question 1: Find the mean math scores of English Language Learners in 
-the country for less than 1 yr, English Language Learners in the U.S. for more 
-than one year, and fluent English speakers.
-Rationale: Are state math scores based too heavily on language skills?
-Methodology: Use PROC MEANS to compute the mean of scores for each subgroup of 
-students across all districts, and output the results to a temportatry dataset. 
-Use PROC SORT extract and sort just the means the temporary dataset, and use 
-PROC PRINT to print the results in the descending order of mean scores.
+Research Question 1: Does English proficiency affect performance on state math tests for the 2015 version of the test versus the 2016 version of the test? 
+
+Rationale: Are the 2015 and/or 2016 state math tests based too heavily on language skills, and how do they compare in outcomes for English language learners?
+
+Methodology: Use PROC MEANS to find mean subgroup math scores (Mean_Scale_Score) for students in English-fluent subgroups (Subgroup_ID = 6,7,8,180) vs the mean of the Mean_Scale_Score for students who are English learners (Subgroup_ID = 120,142,160) for the state math test (Test_Id = 2) in 2015 and 2016 (Test_Year = 2015, 2016) and output the results to a temporary dataset. Use PROC SORT extract and sort just the means of the temporary dataset, and use PROC PRINT to print the results in the descending order of mean scores.
 ;
 
+*--------------CODE BLOCK ----------------;
+
+/*For Test ID 2 - Mathematics*/
+proc means mean noprint data=CAASP1516_analytic_file;
+/*subset results for only English proficiency-related resultrows & Test_ID 2*/
+
+    class Subgroup_ID(ref='6,7,8,180') Test_Year(ref='2015')  Test_ID(ref='2')
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='120,142,160') Test_Year(ref='2015')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='6,7,8,180') Test_Year(ref='2016')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='120,142,160') Test_Year(ref='2016')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+;
+    output out=CAASP1516_analytic_file_temp;
+run;
+
+
+proc print noobs data=CAASP1516_analytic_file_temp;
+    Test_Year, Test_ID, Subgroup_ID;
+    var    Mean_Scale_Score
+;
+run;
+
 *
-Research Question 2: Compare the performance of students on state math tests
-whose parents have at least some college with students whose parents are 
+Research Question 2: Is mastery of state math standards correlated with parents having at least some college compared with students whose parents are 
 high school graduates or who have not graduated from high school. 
+
 Rationale: This would indicate whether parent educational achievement levels
 are directly related to student academic outcomes in math, a key subject
 for 21st-century jobs.
-Methodolody: Calculate mean math scores for all students for each grade level 
-across the entire county for those with parents with some college and beyond
-and for those whose parents do not have at least some college background.
+
+Methodolody: Use PROC MEANS to compute mean subgroup math scores (Mean_Scale_Score) for all student subgroups across all districts for those with parents with some college and beyond (Subgroup_ID = 92,93,94) and for those whose parents do not have at least some college background (Subgroup_ID = 90,91) for 2015 and 2016 (Test_Year = 2015, 2016) and output the results to a temporary dataset. Use PROC SORT to extract and sort just the means of the temporary dataset, and use PROC PRINT to print the results in descending order of mean scores.
 ;
 
+*--------------CODE BLOCK ----------------;
+
+/*For Test ID 2 - Mathematics*/
+proc means mean noprint data=CAASP1516_analytic_file;
+/*subset results for only parent education-related resultrows & Test_ID 2*/
+
+    class Subgroup_ID(ref='90,91') Test_Year(ref='2015')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='92,93,94') Test_Year(ref='2015')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='90,91') Test_Year(ref='2016')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='92,93,94') Test_Year(ref='2016')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+;
+    output out=CAASP1516_analytic_file_temp;
+run;
+
+
+proc print noobs data=CAASP1516_analytic_file_temp;
+    Test_Year, Test_ID, Subgroup_ID;
+    var    Mean_Scale_Score
+;
+run;
 
 *
-Research Question 3: Find the mean scores for 2015, 2016 by grade level for 
-students who are on the school lunch program. 
-Rationale: Is there a strong correlation between poverty levels and academic 
-achievement?
-Methodology: Calculate grade-wise mean scores for each area of assessment 
-and compare how results for 2015 compare with that of 2016. 
+Research Question 3: Does economic disadvantage correlate with low math scores?
+
+Rationale: Should we focus more resources on helping economically-disadvantaged students succeed in higher-income STEM pathways?
+
+Methodology: Use PROC MEANS to compute the mean subgroup math scores (Mean_Scale_Score) for all student subgroups for those who are economically disadvantaged (Subgroup_ID = 31) vs. those who are not economically disadvantaged (Subgroup_ID = 111) for 2015 and 2016 (Test_Year = 2015, 2016) and output the results to a termporary dataset. Use PROC SORT to extract and sort just the means of the the temporary dataset, and use PROC PRINT to print the results in the descending order of mean scores.
 ;
+
+*--------------CODE BLOCK ----------------;
+
+/*For Test ID 2 - Mathematics*/
+proc means mean noprint data=CAASP1516_analytic_file;
+/*subset results for only economic disadvantage-related resultrows & Test_ID 2*/
+
+    class Subgroup_ID(ref='31') Test_Year(ref='2015')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='111') Test_Year(ref='2015')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='31') Test_Year(ref='2016')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+
+    class Subgroup_ID(ref='111') Test_Year(ref='2016')  Test_ID(ref='2') 
+    var Mean_Scale_Score
+;
+    output out=CAASP1516_analytic_file_temp;
+run;
+
+
+proc print noobs data=CAASP1516_analytic_file_temp;
+    Test_Year, Test_ID, Subgroup_ID;
+    var    Mean_Scale_Score
+;
+run;
+
+\ No newline at end of file
