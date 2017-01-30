@@ -1,4 +1,4 @@
-*******************************************************************************;
+﻿*******************************************************************************;
 
 * 
 This file prepares the dataset described below for analysis.
@@ -40,7 +40,7 @@ run;
 /*Import each of the worksheets from the XLSX files into SAS as a separate dataset*/
 *CAASP Test Results 2015;
 PROC IMPORT FILE=CAASPtmp  
-OUT= WORK.CAASP_test_result_2015
+OUT= WORK.CAASP_test_results_2015
 DBMS=XLSX
 REPLACE;
 SHEET="CAASP Test Results 2015"; 
@@ -51,17 +51,17 @@ RUN;
 
 
 /*CAASP Test Results 2016*/
-PROC IMPORT FILE = CAASPtemp 
-OUT= WORK.CAASP_test_result_2016
+PROC IMPORT FILE = CAASPtmp 
+OUT= WORK.CAASP_test_results_2016
 DBMS=XLSX
 REPLACE;
-SHEET="CAASP_Test_result_2016"; 
+SHEET="CAASP Test Results 2016"; 
 GETNAMES=YES;
 RUN;
 
 
 /*Test code worksheet*/
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT FILE = CAASPtmp 
 OUT= WORK.Test
 DBMS=XLSX
 REPLACE;
@@ -71,7 +71,7 @@ RUN;
 
 
 /*Subgroup code worksheet*/
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT FILE = CAASPtmp 
 OUT= WORK.Subgroup
 DBMS=XLSX
 REPLACE;
@@ -81,7 +81,7 @@ RUN;
 
 
 /*AreaKey code worksheet*/
-PROC IMPORT FILE = CAASPtemp 
+PROC IMPORT FILE = CAASPtmp 
 OUT= WORK.AreaKey
 DBMS=XLSX
 REPLACE;
@@ -91,7 +91,7 @@ RUN;
 
 
 /*School code worksheet*/
-PROC IMPORT FILE = CAASPtemp
+PROC IMPORT FILE = CAASPtmp
 OUT= WORK.School
 DBMS=XLSX
 REPLACE;
@@ -100,9 +100,25 @@ GETNAMES=YES;
 RUN;
 
 
-filename CAASPtemp clear; /*clear the fileref created for the 	    
-                            input xls file*/
+filename CAASPtmp clear; /*clear the fileref created for the 	    
+                            			input xls file*/
 
+
+proc contents data = caasp_test_results_2015;
+run;
+proc contents data = caasp_test_results_2016;
+run;
+proc contents data = Test;
+run;
+proc contents data = Subgroup;
+run;
+proc contents data = AreaKey;
+run;
+proc contents data = School;
+run;
+
+Quit
+;
 
 /* Using Proc SQL, create an analytic dataset that will be used for each of the analysis
    questions. This query uses the SQL statement to combine(using UNION) data for years 2015 and 2016 
@@ -148,7 +164,7 @@ a.Area_4_Percentage_Above_Standard',
 a.Area_4_Percentage_Near_Standard',
 a.Area_4_Percentage_Below_Standard'
 
-from CAASP_Test_Result_2015 a,
+from CAASP_Test_Results_2015 a,
      Test b,
      Subgroup c,
      AreaKey d,
@@ -193,7 +209,7 @@ a.Area_4_Percentage_Above_Standard',
 a.Area_4_Percentage_Near_Standard',
 a.Area_4_Percentage_Below_Standard'
 
-from CAASP_Test_Result_2016 a,
+from CAASP_Test_Results_2016 a,
      Test b,
      Subgroup c,
      AreaKey d,
