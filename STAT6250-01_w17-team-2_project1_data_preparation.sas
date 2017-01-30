@@ -1,4 +1,4 @@
-﻿*******************************************************************************;
+﻿﻿*******************************************************************************;
 
 * 
 This file prepares the dataset described below for analysis.
@@ -103,23 +103,6 @@ RUN;
 filename CAASPtmp clear; /*clear the fileref created for the 	    
                             			input xls file*/
 
-
-proc contents data = caasp_test_results_2015;
-run;
-proc contents data = caasp_test_results_2016;
-run;
-proc contents data = Test;
-run;
-proc contents data = Subgroup;
-run;
-proc contents data = AreaKey;
-run;
-proc contents data = School;
-run;
-
-Quit
-;
-
 /* Using Proc SQL, create an analytic dataset that will be used for each of the analysis
    questions. This query uses the SQL statement to combine(using UNION) data for years 2015 and 2016 
    and pulls in the subgroup, test, school name etc lookup worksheets to provide all
@@ -130,92 +113,98 @@ Quit
 
 PROC SQL;
 CREATE TABLE CAASP1516_analytic_file
+AS
 Select 
 'Alameda County' as County, /* */
-'Fremont Unified School District' as 'District_Name',
-a.School_Code', e.School_name,
-a.Test_Year',
-a.Subgroup_ID', c.SubgroupDescription, c.SubgroupCategory,
-a.Test_Type',
-a.Total_CAASPP_Enrollment',
-a.Total_Tested_At_Entity_Level',
-a.Total_Tested_with_Scores',
-a.Grade',
-a.Test_Id',b.TestName,
-a.CAASPP_Reported_Enrollment',
-a.Students_Tested',
-a.Mean_Scale_Score',
-a.Percentage_Standard_Exceeded',
-a.Percentage_Standard_Met',
-a.Percentage_Standard_Met_and_Above',
-a.Percentage_Standard_Nearly_Met',
-a.Percentage_Standard_Not_Met',
-a.Students_with_Scores',
-a.Area_1_Percentage_Above_Standard',
-a.Area_1_Percentage_Near_Standard',
-a.Area_1_Percentage_Below_Standard',
-a.Area_2_Percentage_Above_Standard',
-a.Area_2_Percentage_Near_Standard',
-a.Area_2_Percentage_Below_Standard',
-a.Area_3_Percentage_Above_Standard',
-a.Area_3_Percentage_Near_Standard',
-a.Area_3_Percentage_Below_Standard',
-a.Area_4_Percentage_Above_Standard',
-a.Area_4_Percentage_Near_Standard',
-a.Area_4_Percentage_Below_Standard'
+'Fremont Unified School District' as District_Name,
+a.School_Code, e.School_name,
+a.Test_Year,
+a.Subgroup_ID, c.SubgroupDescription, c.SubgroupCategory,
+a.Test_Type,
+a.Total_CAASPP_Enrollment,
+a.Total_Tested_At_Entity_Level,
+a.Total_Tested_with_Scores,
+a.Grade,
+a.Test_Id,b.Test_Name,
+a.CAASPP_Reported_Enrollment,
+a.Students_Tested,
+a.Mean_Scale_Score,
+a.Percentage_Standard_Exceeded,
+a.Percentage_Standard_Met,
+/*a.Percentage_Standard_Met_and_Above as pcnt_met_and_above,*/
+a.Percentage_Standard_Nearly_Met,
+a.Percentage_Standard_Not_Met,
+a.Students_with_Scores,
+a.Area_1_Percentage_Above_Standard,
+a.Area_1_Percentage_Near_Standard,
+a.Area_1_Percentage_Below_Standard,
+a.Area_2_Percentage_Above_Standard,
+a.Area_2_Percentage_Near_Standard,
+a.Area_2_Percentage_Below_Standard,
+a.Area_3_Percentage_Above_Standard,
+a.Area_3_Percentage_Near_Standard,
+a.Area_3_Percentage_Below_Standard,
+a.Area_4_Percentage_Above_Standard,
+a.Area_4_Percentage_Near_Standard,
+a.Area_4_Percentage_Below_Standard
 
 from CAASP_Test_Results_2015 a,
      Test b,
      Subgroup c,
      AreaKey d,
      School e
-Where a.test_id = b.test_id,
+Where a.test_id = b.test_id
 and   a.subgroup_ID = c.subgroup_ID
-and   a.school_code = e.school_code ;
+and   a.school_code = e.school_code 
 
 UNION
 
 Select 
 'Alameda County' as County, /* */
-'Fremont Unified School District' as 'District_Name',
-a.School_Code', e.School_name,
-a.Test_Year',
-a.Subgroup_ID', c.SubgroupDescription, c.SubgroupCategory,
-a.Test_Type',
-a.Total_CAASPP_Enrollment',
-a.Total_Tested_At_Entity_Level',
-a.Total_Tested_with_Scores',
-a.Grade',
-a.Test_Id',b.TestName,
-a.CAASPP_Reported_Enrollment',
-a.Students_Tested',
-a.Mean_Scale_Score',
-a.Percentage_Standard_Exceeded',
-a.Percentage_Standard_Met',
-a.Percentage_Standard_Met_and_Above',
-a.Percentage_Standard_Nearly_Met',
-a.Percentage_Standard_Not_Met',
-a.Students_with_Scores',
-a.Area_1_Percentage_Above_Standard',
-a.Area_1_Percentage_Near_Standard',
-a.Area_1_Percentage_Below_Standard',
-a.Area_2_Percentage_Above_Standard',
-a.Area_2_Percentage_Near_Standard',
-a.Area_2_Percentage_Below_Standard',
-a.Area_3_Percentage_Above_Standard',
-a.Area_3_Percentage_Near_Standard',
-a.Area_3_Percentage_Below_Standard',
-a.Area_4_Percentage_Above_Standard',
-a.Area_4_Percentage_Near_Standard',
-a.Area_4_Percentage_Below_Standard'
+'Fremont Unified School District' as District_Name,
+a.School_Code, e.School_name,
+a.Test_Year,
+a.Subgroup_ID, c.SubgroupDescription, c.SubgroupCategory,
+a.Test_Type,
+a.Total_CAASPP_Enrollment,
+a.Total_Tested_At_Entity_Level,
+a.Total_Tested_with_Scores,
+a.Grade,
+a.Test_Id,b.Test_Name,
+a.CAASPP_Reported_Enrollment,
+a.Students_Tested,
+a.Mean_Scale_Score,
+a.Percentage_Standard_Exceeded,
+a.Percentage_Standard_Met,
+/*a.Percentage_Standard_Met_and_Above as pcnt_met_and_above,*/
+a.Percentage_Standard_Nearly_Met,
+a.Percentage_Standard_Not_Met,
+a.Students_with_Scores,
+a.Area_1_Percentage_Above_Standard,
+a.Area_1_Percentage_Near_Standard,
+a.Area_1_Percentage_Below_Standard,
+a.Area_2_Percentage_Above_Standard,
+a.Area_2_Percentage_Near_Standard,
+a.Area_2_Percentage_Below_Standard,
+a.Area_3_Percentage_Above_Standard,
+a.Area_3_Percentage_Near_Standard,
+a.Area_3_Percentage_Below_Standard,
+a.Area_4_Percentage_Above_Standard,
+a.Area_4_Percentage_Near_Standard,
+a.Area_4_Percentage_Below_Standard
 
 from CAASP_Test_Results_2016 a,
      Test b,
      Subgroup c,
      AreaKey d,
      School e
-Where a.test_id = b.test_id,
+Where a.test_id = b.test_id
 and   a.subgroup_ID = c.subgroup_ID
 and   a.school_code = e.school_code ;
+
+PROC PRINT data = CAASP1516_analytic_file
+;
+
+
 
 QUIT;
