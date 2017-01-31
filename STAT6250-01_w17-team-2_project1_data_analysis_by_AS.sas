@@ -13,13 +13,38 @@ See included file for dataset properties
 ;
 
 * environmental setup;
+%let dataPrepFileName = STAT6250-01_w17-team-2_project1_data_preparation.sas;
+%let sasUEFilePrefix = team-2_project1;
 
-* set relative file import path to current directory (using standard SAS trick;
-X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
+* load external file that generates analytic dataset FRPM1516_analytic_file
+using a system path dependent on the host operating system, after setting the
+relative file import path to the current directory, if using Windows;
+%macro setup;
+%if
+    &SYSSCP. = WIN
+%then
+    %do;
+        X
+        "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))"""
+        ;           
+        %include ".\&dataPrepFileName.";
+    %end;
+%else
+    %do;
+        %include "~/&sasUEFilePrefix./&dataPrepFileName.";
+    %end;
+%mend;
+%setup
 
-* load external file that generates analytic dataset CAASP1516_analytic_file;
-%include '.\STAT6250-01_w17-team-2_project1_data_preparation.sas';
 
+proc contents data = CAASP1516_analytic_file; /* Use this data in all your analysis code */
+run;
+
+
+/************************ COMMON CODE IN ALL ANALYSIS FILES TILL HERE*********/
+
+
+/************** REST OF THE CODE WILL BE SPECIFIC TO YOUR ANALYSIS ***********/
 
 *
 Research Question: Find the mean scores of various subgroups based on parent education level 
