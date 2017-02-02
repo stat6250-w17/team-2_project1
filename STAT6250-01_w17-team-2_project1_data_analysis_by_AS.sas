@@ -4,8 +4,8 @@
 *******************************************************************************;
 
 *
-This file uses the following analytic dataset to address several research
-questions regarding free/reduced-price meals at CA public K-12 schools
+This file uses the CAASP1516_analytic_file analytic dataset to address several 
+research questions regarding free/reduced-price meals at CA public K-12 schools
 Dataset Name: CAASP1516_analytic_file created in external file
 STAT6250-01_w17-team-2_project1_data_preparation.sas, which is assumed to be
 in the same directory as this file
@@ -43,8 +43,76 @@ run;
 
 /************************ COMMON CODE IN ALL ANALYSIS FILES TILL HERE*********/
 
+* Check and remove duplicate rows in the dataset;
+
+proc sort
+        nodupkey
+        data=CAASP1516_analytic_file
+        out=_null_
+    ;
+    by School_Code, 
+       Test_Year, 
+       Subgroup_ID, 
+       SubgroupCategory, 
+       Test_Type,
+       Grade,
+       Test_Id
+run;
+
 
 /************** REST OF THE CODE WILL BE SPECIFIC TO YOUR ANALYSIS ***********/
+
+*----------------------------------------------------------------------
+title1
+"Research Question: What are the top twenty districts with the highest mean values of Percent Eligible FRPM for K-12?"
+;
+title2
+"Rationale: This should help identify the school districts in the most need of outreach based upon child poverty levels."
+;
+footnote1
+"Based on the above output, 9 schools have 100% of their students eligible for free/reduced-price meals under the National School Lunch Program."
+;
+footnote2
+"Moreover, we can see that virtually all of the top 20 schools appear to be elementary schools, suggesting increasing early childhood poverty."
+;
+footnote3
+"Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
+;
+*
+Methodology: Use PROC MEANS to compute the mean of Percent_Eligible_FRPM_K12
+for District_Name, and output the results to a temportatry dataset. Use PROC
+SORT extract and sort just the means the temporary dateset, and use PROC PRINT
+to print just the first twenty observations from the temporary dataset;
+;
+proc means
+        mean
+        noprint
+        data=FRPM1516_analytic_file
+    ;
+    class District_Name;
+    var Percent_Eligible_FRPM_K12;
+    output out=FRPM1516_analytic_file_temp;
+run;
+
+proc sort data=FRPM1516_analytic_file_temp(where=(_STAT_="MEAN"));
+    by descending Percent_Eligible_FRPM_K12;
+run;
+
+proc print noobs data=FRPM1516_analytic_file_temp(obs=20);
+    id District_Name;
+    var Percent_Eligible_FRPM_K12;
+run;
+title;
+footnote;
+
+----------------------------------------------------------------------;
+title1
+"Research Question: Find the mean scores of various subgroups based on 
+ parent education level ";
+
+title2
+"Rationale: Does the parent education have an impact on student performance? Are students with support at home able to perform better on SBAC testing?";
+
 
 *
 Research Question: Find the mean scores of various subgroups based on parent education level 
@@ -114,10 +182,27 @@ Area_4_Percentage_Below_Standard
 ;
 run;
 
+*-----------------------------------------------------------------------------------;
+footnote1
+"Based on the above output, 9 schools have 100% of their students eligible for free/reduced-price meals under the National School Lunch Program."
+;
+footnote2
+"Moreover, we can see that virtually all of the top 20 schools appear to be elementary schools, suggesting increasing early childhood poverty."
+;
+footnote3
+"Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
+;
+
+*-----------------------------------------------------------------------------------;
+title1
+"Research Question: Compare performance of boys vs. girls across different grade levels. ";
+
+title2
+"Rationale: This would reveal if the SBAC testing methodology is better suits one gender or if the scores are relatively even.";
+
+
 
 *
-Research Question: Compare performance of boys vs. girls across different grade levels. 
-Rationale: This would reveal if the SBAC testing methodology is better suits one gender or if the scores are relatively even.
  
 Methodolody: Calculate mean scores for boys and girls for each grade level across teh entire county
 
@@ -127,6 +212,19 @@ proc means min q1 median q3 max data=CAASP1516_analytic_file/*Subset data to pro
     class SubgroupName;
     var /*Assessment Areas*/;
 run;
+
+
+*-----------------------------------------------------------------------------------;
+footnote1
+"Based on the above output, 9 schools have 100% of their students eligible for free/reduced-price meals under the National School Lunch Program."
+;
+footnote2
+"Moreover, we can see that virtually all of the top 20 schools appear to be elementary schools, suggesting increasing early childhood poverty."
+;
+footnote3
+"Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
+;
+*-----------------------------------------------------------------------------------;
 
 
 *
@@ -153,3 +251,31 @@ Area_4_Percentage_Above_Standard,
 Area_4_Percentage_Near_Standard,
 Area_4_Percentage_Below_Standard    ;
 run;
+
+
+/*-----------------------------------------------------------------------------------;
+footnote1
+"Based on the above output, 9 schools have 100% of their students eligible for free/reduced-price meals under the National School Lunch Program."
+;
+footnote2
+"Moreover, we can see that virtually all of the top 20 schools appear to be elementary schools, suggesting increasing early childhood poverty."
+;
+footnote3
+"Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
+;
+*-----------------------------------------------------------------------------------;
+
+
+
+
+*proc sort data=FRPM1516_analytic_file_temp(where=(_STAT_="MEAN"));
+    by descending Percent_Eligible_FRPM_K12;
+run;
+
+proc print noobs data=FRPM1516_analytic_file_temp(obs=20);
+    id District_Name;
+    var Percent_Eligible_FRPM_K12;
+run;
+title;
+footnote;
+*/
