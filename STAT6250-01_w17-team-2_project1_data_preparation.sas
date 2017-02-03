@@ -202,9 +202,6 @@ Where a.test_id = b.test_id
 and   a.subgroup_ID = c.subgroup_ID
 and   a.school_code = e.school_code ;
 
-PROC PRINT data = CAASP1516_analytic_file
-;
-
 
 
 QUIT;
