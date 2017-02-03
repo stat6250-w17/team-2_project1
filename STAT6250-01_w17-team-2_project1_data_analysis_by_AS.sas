@@ -46,63 +46,20 @@ proc sort
         data=CAASP1516_analytic_file
         out=_null_
     ;
-    by School_Code, 
-       Test_Year, 
-       Subgroup_ID, 
-       SubgroupCategory, 
-       Test_Type,
-       Grade,
+    by School_Code 
+       Test_Year 
+       Subgroup_ID 
+       SubgroupCategory 
+       Grade
        Test_Id
+	   ;
+
 run;
 
 
 /************** REST OF THE CODE WILL BE SPECIFIC TO YOUR ANALYSIS ***********/
 
-*----------------------------------------------------------------------
-title1
-"Research Question: What are the top twenty districts with the highest mean values of Percent Eligible FRPM for K-12?"
-;
-title2
-"Rationale: This should help identify the school districts in the most need of outreach based upon child poverty levels."
-;
-footnote1
-"Based on the above output, 9 schools have 100% of their students eligible for free/reduced-price meals under the National School Lunch Program."
-;
-footnote2
-"Moreover, we can see that virtually all of the top 20 schools appear to be elementary schools, suggesting increasing early childhood poverty."
-;
-footnote3
-"Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
-;
-
-/*
-Methodology: Use PROC MEANS to compute the mean of Percent_Eligible_FRPM_K12
-for District_Name, and output the results to a temportatry dataset. Use PROC
-SORT extract and sort just the means the temporary dateset, and use PROC PRINT
-to print just the first twenty observations from the temporary dataset;
-;
-proc means
-        mean
-        noprint
-        data=FRPM1516_analytic_file
-    ;
-    class District_Name;
-    var Percent_Eligible_FRPM_K12;
-    output out=FRPM1516_analytic_file_temp;
-run;
-
-proc sort data=FRPM1516_analytic_file_temp(where=(_STAT_="MEAN"));
-    by descending Percent_Eligible_FRPM_K12;
-run;
-
-proc print noobs data=FRPM1516_analytic_file_temp(obs=20);
-    id District_Name;
-    var Percent_Eligible_FRPM_K12;
-run;
-title;
-footnote;
-*/
-----------------------------------------------------------------------;
+*----------------------------------------------------------------------;
 title1
 "Research Question: Find the mean scores of various subgroups based on 
  parent education level ";
@@ -124,12 +81,12 @@ Methodology: Use PROC MEANS to compute the mean of scores for each subgroup of s
 
 /*For Test ID 1 - English/Language Arts*/
 proc sort data=CAASP1516_analytic_file;/*subset results for only Parent education related resultrows & Test_ID 1*/
-      by test_ID, subgroup_ID
+      by test_ID subgroup_ID
 ;
 
 proc means mean noprint data=CAASP1516_analytic_file;/*subset results for only Parent education related resultrows & Test_ID 1*/
-     where subgroupCategory = ' "Parent Education"' and test_ID = 1;
-    class subgroup_ID SubgroupDescription;
+     where subgroupCategory = ' "Parent Education"' and test_ID = 1 and school_code > 0;
+    class subgroupCategory SubgroupDescription;
     var 
 Area_1_Percentage_Above_Standard
 Area_1_Percentage_Near_Standard
@@ -150,8 +107,8 @@ run;
 
 /*For Test ID 2 - Mathematics*/
 proc means mean noprint data=CAASP1516_analytic_file;/*subset results for only Parent education related resultrows & Test_ID 1*/
-     where subgroupCategory = ' "Parent Education"' and test_ID = 2;
-    class subgroup_ID SubgroupDescription;
+     where subgroupCategory = ' "Parent Education"' and test_ID = 2 and school_code > 0;
+    class subgroupcategory SubgroupDescription;
     var 
 Area_1_Percentage_Above_Standard
 Area_1_Percentage_Near_Standard
@@ -170,13 +127,13 @@ Area_4_Percentage_Below_Standard
 run;
 
 
-proc print data=CAASP1516_analytic_file_temp
-;
+proc print data=CAASP1516_analytic_file_temp;
 run;
 
+quit;
 
 proc print noobs data=CAASP1516_analytic_file_temp;
-    id Test_type, SubgroupCategory, SubgroupDescription;
+    id Test_ID Subgroup_ID SubgroupCategory SubgroupDescription;
     var    Area_1_Percentage_Above_Standard
 Area_1_Percentage_Near_Standard
 Area_1_Percentage_Below_Standard
@@ -192,15 +149,17 @@ Area_4_Percentage_Below_Standard
 ;
 run;
 
+quit;
+
+/************************************************** TILL HERE **********************************************/
+
+
 *-----------------------------------------------------------------------------------;
 footnote1
-"Based on the above output, 9 schools have 100% of their students eligible for free/reduced-price meals under the National School Lunch Program."
+""
 ;
 footnote2
-"Moreover, we can see that virtually all of the top 20 schools appear to be elementary schools, suggesting increasing early childhood poverty."
-;
-footnote3
-"Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
+""
 ;
 
 *-----------------------------------------------------------------------------------;
@@ -208,7 +167,7 @@ title1
 "Research Question: Compare performance of boys vs. girls across different grade levels. ";
 
 title2
-"Rationale: This would reveal if the SBAC testing methodology is better suits one gender or if the scores are relatively even.";
+"Rationale: This would reveal if the SBAC testing methodology is better suited for one gender or if the scores are relatively even.";
 
 
 
@@ -218,23 +177,37 @@ Methodolody: Calculate mean scores for boys and girls for each grade level acros
 
 ;
 *--------------CODE BLOCK ----------------;
-proc means min q1 median q3 max data=CAASP1516_analytic_file/*Subset data to process result rows for subgroupCategory = 'Gender'*/;
-    class SubgroupName;
-    var /*Assessment Areas*/;
+proc means data=CAASP1516_analytic_file
+  where subgroupCategory = ' "Gender"' and school_code > 0;/*Subset data to process result rows for subgroupCategory = 'Gender'*/;
+    class subgroupCategory SubgroupDescription;
+    var    Area_1_Percentage_Above_Standard
+Area_1_Percentage_Near_Standard
+Area_1_Percentage_Below_Standard
+Area_2_Percentage_Above_Standard
+Area_2_Percentage_Near_Standard
+Area_2_Percentage_Below_Standard
+Area_3_Percentage_Above_Standard
+Area_3_Percentage_Near_Standard
+Area_3_Percentage_Below_Standard
+Area_4_Percentage_Above_Standard
+Area_4_Percentage_Near_Standard
+Area_4_Percentage_Below_Standard
 run;
 
 
 *-----------------------------------------------------------------------------------;
 footnote1
-"Based on the above output, 9 schools have 100% of their students eligible for free/reduced-price meals under the National School Lunch Program."
-;
-footnote2
-"Moreover, we can see that virtually all of the top 20 schools appear to be elementary schools, suggesting increasing early childhood poverty."
-;
-footnote3
-"Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
+"End of report 2"
 ;
 *-----------------------------------------------------------------------------------;
+
+title1
+"Research Question: Find the mean scores for 2015, 2016 by grade level for each of the 
+Areas of measurement for each testing (four areas for Language Arts and three for Mathematics)";
+
+title2
+"Rationale: Although two years data is not enough to show a trend, 
+            it would be interesting to see which areas are consistently most challenging to students.";
 
 
 *
@@ -245,47 +218,48 @@ Methodology: Calculate grade-wise mean scores for each area of assessment and co
 ;
 
 *--------------CODE BLOCK ----------------;
+proc means data=CAASP1516_analytic_file;
+    where test_ID = 1 and school_code > 0;
+    class school_year grade
+    var
+Area_1_Percentage_Above_Standard
+Area_1_Percentage_Near_Standard
+Area_1_Percentage_Below_Standard
+Area_2_Percentage_Above_Standard
+Area_2_Percentage_Near_Standard
+Area_2_Percentage_Below_Standard
+Area_3_Percentage_Above_Standard
+Area_3_Percentage_Near_Standard
+Area_3_Percentage_Below_Standard
+Area_4_Percentage_Above_Standard
+Area_4_Percentage_Near_Standard
+Area_4_Percentage_Below_Standard    
+;
+run;
+
+/*Grade wise means for Mathematics*/
 proc means min q1 median q3 max data=CAASP1516_analytic_file;
+    where test_ID = 2 and school_code > 0;
     class grade
     var
-Area_1_Percentage_Above_Standard,
-Area_1_Percentage_Near_Standard,
-Area_1_Percentage_Below_Standard,
-Area_2_Percentage_Above_Standard,
-Area_2_Percentage_Near_Standard,
-Area_2_Percentage_Below_Standard,
-Area_3_Percentage_Above_Standard,
-Area_3_Percentage_Near_Standard,
-Area_3_Percentage_Below_Standard,
-Area_4_Percentage_Above_Standard,
-Area_4_Percentage_Near_Standard,
-Area_4_Percentage_Below_Standard    ;
+Area_1_Percentage_Above_Standard
+Area_1_Percentage_Near_Standard
+Area_1_Percentage_Below_Standard
+Area_2_Percentage_Above_Standard
+Area_2_Percentage_Near_Standard
+Area_2_Percentage_Below_Standard
+Area_3_Percentage_Above_Standard
+Area_3_Percentage_Near_Standard
+Area_3_Percentage_Below_Standard
+Area_4_Percentage_Above_Standard
+Area_4_Percentage_Near_Standard
+Area_4_Percentage_Below_Standard    
+;
 run;
 
 
 /*-----------------------------------------------------------------------------------;
 footnote1
-"Based on the above output, 9 schools have 100% of their students eligible for free/reduced-price meals under the National School Lunch Program."
-;
-footnote2
-"Moreover, we can see that virtually all of the top 20 schools appear to be elementary schools, suggesting increasing early childhood poverty."
-;
-footnote3
-"Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
+""
 ;
 *-----------------------------------------------------------------------------------;
-
-
-
-
-*proc sort data=FRPM1516_analytic_file_temp(where=(_STAT_="MEAN"));
-    by descending Percent_Eligible_FRPM_K12;
-run;
-
-proc print noobs data=FRPM1516_analytic_file_temp(obs=20);
-    id District_Name;
-    var Percent_Eligible_FRPM_K12;
-run;
-title;
-footnote;
-*/
