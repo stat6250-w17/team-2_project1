@@ -37,10 +37,6 @@ relative file import path to the current directory, if using Windows;
 %setup
 
 
-proc contents data = CAASP1516_analytic_file; /* Use this data in all your analysis code */
-run;
-
-
 /************************ COMMON CODE IN ALL ANALYSIS FILES TILL HERE*********/
 
 * Check and remove duplicate rows in the dataset;
@@ -78,7 +74,8 @@ footnote2
 footnote3
 "Further analysis to look for geographic patterns is clearly warrented, given such high mean percentages of early childhood poverty."
 ;
-*
+
+/*
 Methodology: Use PROC MEANS to compute the mean of Percent_Eligible_FRPM_K12
 for District_Name, and output the results to a temportatry dataset. Use PROC
 SORT extract and sort just the means the temporary dateset, and use PROC PRINT
@@ -104,7 +101,7 @@ proc print noobs data=FRPM1516_analytic_file_temp(obs=20);
 run;
 title;
 footnote;
-
+*/
 ----------------------------------------------------------------------;
 title1
 "Research Question: Find the mean scores of various subgroups based on 
@@ -126,19 +123,25 @@ Methodology: Use PROC MEANS to compute the mean of scores for each subgroup of s
 
 
 /*For Test ID 1 - English/Language Arts*/
+proc sort data=CAASP1516_analytic_file;/*subset results for only Parent education related resultrows & Test_ID 1*/
+      by test_ID, subgroup_ID
+;
+
 proc means mean noprint data=CAASP1516_analytic_file;/*subset results for only Parent education related resultrows & Test_ID 1*/
-    class subgroupName;
-    var Area_1_Percentage_Above_Standard,
-Area_1_Percentage_Near_Standard,
-Area_1_Percentage_Below_Standard,
-Area_2_Percentage_Above_Standard,
-Area_2_Percentage_Near_Standard,
-Area_2_Percentage_Below_Standard,
-Area_3_Percentage_Above_Standard,
-Area_3_Percentage_Near_Standard,
-Area_3_Percentage_Below_Standard,
-Area_4_Percentage_Above_Standard,
-Area_4_Percentage_Near_Standard,
+     where subgroupCategory = ' "Parent Education"' and test_ID = 1;
+    class subgroup_ID SubgroupDescription;
+    var 
+Area_1_Percentage_Above_Standard
+Area_1_Percentage_Near_Standard
+Area_1_Percentage_Below_Standard
+Area_2_Percentage_Above_Standard
+Area_2_Percentage_Near_Standard
+Area_2_Percentage_Below_Standard
+Area_3_Percentage_Above_Standard
+Area_3_Percentage_Near_Standard
+Area_3_Percentage_Below_Standard
+Area_4_Percentage_Above_Standard
+Area_4_Percentage_Near_Standard
 Area_4_Percentage_Below_Standard
 ;
     output out=CAASP1516_analytic_file_temp;
@@ -146,38 +149,45 @@ run;
 
 
 /*For Test ID 2 - Mathematics*/
-proc means mean noprint data=CAASP1516_analytic_file;/*subset results for only Parent education related resultrows & Test_ID 2*/
-    class subgroupName;
-    var Area_1_Percentage_Above_Standard,
-Area_1_Percentage_Near_Standard,
-Area_1_Percentage_Below_Standard,
-Area_2_Percentage_Above_Standard,
-Area_2_Percentage_Near_Standard,
-Area_2_Percentage_Below_Standard,
-Area_3_Percentage_Above_Standard,
-Area_3_Percentage_Near_Standard,
-Area_3_Percentage_Below_Standard,
-Area_4_Percentage_Above_Standard,
-Area_4_Percentage_Near_Standard,
+proc means mean noprint data=CAASP1516_analytic_file;/*subset results for only Parent education related resultrows & Test_ID 1*/
+     where subgroupCategory = ' "Parent Education"' and test_ID = 2;
+    class subgroup_ID SubgroupDescription;
+    var 
+Area_1_Percentage_Above_Standard
+Area_1_Percentage_Near_Standard
+Area_1_Percentage_Below_Standard
+Area_2_Percentage_Above_Standard
+Area_2_Percentage_Near_Standard
+Area_2_Percentage_Below_Standard
+Area_3_Percentage_Above_Standard
+Area_3_Percentage_Near_Standard
+Area_3_Percentage_Below_Standard
+Area_4_Percentage_Above_Standard
+Area_4_Percentage_Near_Standard
 Area_4_Percentage_Below_Standard
 ;
     output out=CAASP1516_analytic_file_temp;
 run;
 
 
+proc print data=CAASP1516_analytic_file_temp
+;
+run;
+
+
 proc print noobs data=CAASP1516_analytic_file_temp;
-    id Test_ID, SubgroupName;
-    var    Area_1_Percentage_Above_Standard,
-Area_1_Percentage_Near_Standard,
-Area_1_Percentage_Below_Standard,
-Area_2_Percentage_Above_Standard,
-Area_2_Percentage_Near_Standard,
-Area_2_Percentage_Below_Standard,
-Area_3_Percentage_Above_Standard,
-Area_3_Percentage_Near_Standard,
-Area_3_Percentage_Below_Standard,
-Area_4_Percentage_Above_Standard,
-Area_4_Percentage_Near_Standard,
+    id Test_type, SubgroupCategory, SubgroupDescription;
+    var    Area_1_Percentage_Above_Standard
+Area_1_Percentage_Near_Standard
+Area_1_Percentage_Below_Standard
+Area_2_Percentage_Above_Standard
+Area_2_Percentage_Near_Standard
+Area_2_Percentage_Below_Standard
+Area_3_Percentage_Above_Standard
+Area_3_Percentage_Near_Standard
+Area_3_Percentage_Below_Standard
+Area_4_Percentage_Above_Standard
+Area_4_Percentage_Near_Standard
 Area_4_Percentage_Below_Standard
 ;
 run;
