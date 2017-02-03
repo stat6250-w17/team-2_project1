@@ -67,7 +67,8 @@ title1
 title2
 "Rationale: Does the parent education have an impact on student performance? Are students with support at home able to perform better on SBAC testing?";
 
-
+title3
+"Language Arts.";
 *
 Research Question: Find the mean scores of various subgroups based on parent education level 
 Rationale: Does the parent education have an impact on student performance? Are students with support at home able to perform better on SBAC testing?
@@ -105,6 +106,9 @@ Area_4_Percentage_Below_Standard
 run;
 
 
+title3
+"Mathematics";
+
 /*For Test ID 2 - Mathematics*/
 proc means mean noprint data=CAASP1516_analytic_file;/*subset results for only Parent education related resultrows & Test_ID 1*/
      where subgroupCategory = ' "Parent Education"' and test_ID = 2 and school_code > 0;
@@ -127,11 +131,6 @@ Area_4_Percentage_Below_Standard
 run;
 
 
-proc print data=CAASP1516_analytic_file_temp;
-run;
-
-quit;
-
 proc print noobs data=CAASP1516_analytic_file_temp;
     id Test_ID Subgroup_ID SubgroupCategory SubgroupDescription;
     var    Area_1_Percentage_Above_Standard
@@ -149,8 +148,6 @@ Area_4_Percentage_Below_Standard
 ;
 run;
 
-quit;
-
 /************************************************** TILL HERE **********************************************/
 
 
@@ -164,6 +161,8 @@ footnote2
 
 *-----------------------------------------------------------------------------------;
 title1
+"Report 2";
+title2
 "Research Question: Compare performance of boys vs. girls across different grade levels. ";
 
 title2
@@ -177,7 +176,7 @@ Methodolody: Calculate mean scores for boys and girls for each grade level acros
 
 ;
 *--------------CODE BLOCK ----------------;
-proc means data=CAASP1516_analytic_file
+proc means data=CAASP1516_analytic_file ;
   where subgroupCategory = ' "Gender"' and school_code > 0;/*Subset data to process result rows for subgroupCategory = 'Gender'*/;
     class subgroupCategory SubgroupDescription;
     var    Area_1_Percentage_Above_Standard
@@ -192,6 +191,7 @@ Area_3_Percentage_Below_Standard
 Area_4_Percentage_Above_Standard
 Area_4_Percentage_Near_Standard
 Area_4_Percentage_Below_Standard
+;
 run;
 
 
@@ -200,13 +200,14 @@ footnote1
 "End of report 2"
 ;
 *-----------------------------------------------------------------------------------;
-
 title1
+"Report 3.";
+title2
 "Research Question: Find the mean scores for 2015, 2016 by grade level for each of the 
 Areas of measurement for each testing (four areas for Language Arts and three for Mathematics)";
 
 title2
-"Rationale: Although two years data is not enough to show a trend, 
+"Rationale: Although two years data is not enought o show a trend, 
             it would be interesting to see which areas are consistently most challenging to students.";
 
 
@@ -220,7 +221,7 @@ Methodology: Calculate grade-wise mean scores for each area of assessment and co
 *--------------CODE BLOCK ----------------;
 proc means data=CAASP1516_analytic_file;
     where test_ID = 1 and school_code > 0;
-    class school_year grade
+    class Test_year grade;
     var
 Area_1_Percentage_Above_Standard
 Area_1_Percentage_Near_Standard
@@ -240,7 +241,7 @@ run;
 /*Grade wise means for Mathematics*/
 proc means min q1 median q3 max data=CAASP1516_analytic_file;
     where test_ID = 2 and school_code > 0;
-    class grade
+    class grade;
     var
 Area_1_Percentage_Above_Standard
 Area_1_Percentage_Near_Standard
@@ -263,3 +264,4 @@ footnote1
 ""
 ;
 *-----------------------------------------------------------------------------------;
+
