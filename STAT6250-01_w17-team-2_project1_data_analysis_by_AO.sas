@@ -1,5 +1,3 @@
-@@ -1 +1,57 @@
-
 *******************************************************************************;
 **************** 80-character banner for column width reference ***************;
 * (set window width to banner width to calibrate line length to 80 characters *;
@@ -112,13 +110,6 @@ results to a temporary dataset.
 /*For Test ID 2 - Mathematics*/
 proc means mean noprint data=CAASP1516_analytic_file;
 /*subset math results for only parent education-some college & beyond*/
-
-    class Subgroup_ID  Test_Year  Test_ID; 
-    var Mean_Scale_Score;
-	    where Subgroup_Id in (92,93,94) and Test_Year in (2015,2016) and 
-            Test_Id=2;
-
-
     output out=CAASP1516_analytic_file_temp;
 run;
 
@@ -152,24 +143,3 @@ and output the results to a termporary dataset.
 /*For Test ID 2 - Mathematics*/
 proc means mean noprint data=CAASP1516_analytic_file;
 /*subset math test results for only economic disadvantaged*/
-
-    class Subgroup_ID  Test_Year  Test_ID; 
-    var Mean_Scale_Score;
-	    where Subgroup_Id=31 and Test_Year in (2015,2016) and 
-            Test_Id=2;
-
-
-    output out=CAASP1516_analytic_file_temp;
-run;
-
-/*For Test ID 2 - Mathematics*/
-proc means mean noprint data=CAASP1516_analytic_file;
-/*subset math results for non-economically-disadvantaged */
-
-    class Subgroup_ID Test_Year  Test_ID; 
-    var Mean_Scale_Score;
-	    where Subgroup_Id=111 and Test_Year in (2015,2016) and Test_Id=2;
-
-
-    output out=CAASP1516_analytic_file_temp;
-run;
