@@ -2,7 +2,6 @@
 **************** 80-character banner for column width reference ***************;
 * (set window width to banner width to calibrate line length to 80 characters *;
 *******************************************************************************;
-
 *
 This file uses the following analytic dataset to address several research
 questions regarding free/reduced-price meals at CA public K-12 schools
@@ -64,31 +63,36 @@ to a temporary dataset.
 
 *--------------CODE BLOCK ----------------;
 
- /*For Test ID 2 - Mathematics Test_Year=2015 */
- proc means mean data=CAASP1516_analytic_file;
+ /*For Test ID 2 - Mathematics Test, CAASP 2015, 2016 */
  /*subset results for English-proficient student math results*/
  
-     class Subgroup_ID  Test_Year  Test_ID;
-     var Mean_Scale_Score;
-	     where Subgroup_Id in (6,7,8,180) and Test_Year in (2015,2016) and 
-            Test_Id=2;
-		    
-	 output out=CAASP1516_analytic_file_temp;
+title1 'Calculating mean math scores of English-proficient students';
+proc means data=CAASP1516_analytic_file(where=(Subgroup_Id 
+    in (6,7,8,180) and Test_Id=2 and Test_Year in (2015,2016))) 
+    maxdec=2 n mean std median min max;
+
+    class Test_Year;
+	var Mean_Scale_Score; 
+    output out=eng_prof; 
+
  run;
+title1;
+ title2 'Calculating mean math scores of non-English-proficient students';
+ proc means data=CAASP1516_analytic_file(where=(Subgroup_Id in (120,142,160) 
+    and Test_Id=2 and Test_Year in (2015,2016))) 
+    maxdec=2 n mean std median min max;
+
+    class Test_Year;
+	var Mean_Scale_Score; 
+    output out=non_eng_prof; 
+
+ run;
+title2;
+
+footnote1 'CAASP Math Test Results 2015,2016';
 
 
- /*For Test ID 2 - Mathematics Test_Year=2015 */
- proc means mean data=CAASP1516_analytic_file;
- /*subset results for non-English-proficient student math results*/
- 
-     class Subgroup_ID  Test_Year  Test_ID;
-     var Mean_Scale_Score;
-	     where Subgroup_Id in (120,142,160) and Test_Year in (2015,2016) and 
-            Test_Id=2;
-		    
-	 output out=CAASP1516_analytic_file_temp;
- run;
- 
+
 *
 Research Question 2: Is mastery of state math standards correlated with parents 
 having at least some college compared with students whose parents are 
@@ -107,23 +111,35 @@ results to a temporary dataset.
 ;
 
 *--------------CODE BLOCK ----------------;
-/*For Test ID 2 - Mathematics*/
-proc means mean noprint data=CAASP1516_analytic_file;
-/*subset math results for only parent education-some college & beyond*/
-    output out=CAASP1516_analytic_file_temp;
-run;
+ /*For Test ID 2 - Mathematics Test, CAASP 2015, 2016 */
+ /*subset results for student math results by parent education*/
+ 
+title1 'Calculating mean math scores of students whose parents have not 
+    attended college';
+proc means data=CAASP1516_analytic_file(where=(Subgroup_Id 
+    in (90,91) and Test_Id=2 and Test_Year in (2015,2016))) 
+    maxdec=2 n mean std median min max;
 
-/*For Test ID 2 - Mathematics*/
-proc means mean noprint data=CAASP1516_analytic_file;
-/*subset math results for only parent education-only hs or hs dropout*/
+    class Test_Year;
+	var Mean_Scale_Score; 
+    output out=parent_no_college; 
 
-    class Subgroup_ID Test_Year  Test_ID; 
-    var Mean_Scale_Score;
-	    where Subgroup_Id in (90,91) and Test_Year in (2015,2016) and Test_Id=2;
+ run;
+title1;
+title2 'Calculating mean math scores of students whose parents have 
+    attended at least some college or beyond';
+ proc means data=CAASP1516_analytic_file(where=(Subgroup_Id 
+    in (92,93,94) and Test_Id=2 and Test_Year in (2015,2016))) 
+    maxdec=2 n mean std median min max;
 
+    class Test_Year;
+	var Mean_Scale_Score; 
+    output out=parent_some_college; 
 
-    output out=CAASP1516_analytic_file_temp;
-run;
+ run;
+title2;
+
+footnote1 'CAASP Math Test Results 2015,2016';
 
 *
 Research Question 3: Does economic disadvantage correlate with low math scores?
@@ -139,7 +155,31 @@ and output the results to a termporary dataset.
 ;
 
 *--------------CODE BLOCK ----------------;
+ /*For Test ID 2 - Mathematics Test, CAASP 2015, 2016 */
+ /*subset results for student math results by economic disadvantage*/
+ 
+title1 'Calculating mean math scores of students who are economically disadvantaged';
+proc means data=CAASP1516_analytic_file(where=(Subgroup_Id=31 and Test_Id=2 
+    and Test_Year in (2015,2016))) 
+    maxdec=2 n mean std median min max;
 
-/*For Test ID 2 - Mathematics*/
-proc means mean noprint data=CAASP1516_analytic_file;
-/*subset math test results for only economic disadvantaged*/
+    class Test_Year;
+	var Mean_Scale_Score; 
+    output out=econ_disadv; 
+
+ run;
+title1;
+title2 'Calculating mean math scores of students who are not economically 
+    disadvantaged';
+ proc means data=CAASP1516_analytic_file(where=(Subgroup_Id=111 and Test_Id=2 
+    and Test_Year in (2015,2016)))  
+    maxdec=2 n mean std median min max;
+
+    class Test_Year;
+	var Mean_Scale_Score; 
+    output out=no_econ_disadv; 
+
+ run;
+title2;
+
+footnote1 'CAASP Math Test Results 2015,2016';
