@@ -15,11 +15,11 @@ See included file for dataset properties
 ;
 
 * environmental setup;
-
+*IL: be careful with typos in comments;
 * set relative file import path to current directory (using standard SAS trick;
 %let dataPrepFileName = STAT6250-01_w17-team-2_project1_data_preparation.sas;
 %let sasUEFilePrefix = team-2_project1;
-
+*IL: be careful with copying/pasting;
 * load external file that generates analytic dataset FRPM1516_analytic_file,using 
 a system path dependent on the host operating system, after setting the
 relative file import path to the current directory, if using Windows;
@@ -39,43 +39,44 @@ relative file import path to the current directory, if using Windows;
     %end;
 %mend;
 %setup
-
+*IL: consider leaving proc contents out of final code;
 proc contents data = CAASP1516_analytic_file; /* Use this data in all your analysis code */
 run;
 
-
+*IL: don't wrap string literals;
 title1
-"Research Question 1: What's the difference between the mean scores of students who 
-are economically disadvantaged and those who are not?"
+"Research Question 1: What's the difference between the mean scores of students who are economically disadvantaged and those who are not?"
 ;
 
 title2
 "Rationale: This should help us identify what's the economic status impact on the 
 test score and see how big it is"
 ;
-
+*IL: consider using specific numbers and giving explanations for patterns/trends
+     in your conclusions;
 footnote1
 "Based on the output above, we can see that for those who are economically doing well have a better 
 performance on the test. But the difference is not as high"
 ;
-
+*IL: wrap comments at 80 characters;
 *
 Methodology: Use PROC MEANS to compute the mean scores for the data input of data-
 set and output the results to a temporary dataset. Use PROC FORMAT to extract and sort 
 just the means the temporary dataset to just compare the subset of students who are economically 
 disadvantaged and those who are not disadvantaged.
 ;
-
+*IL: consider reducing the overall amount of output to make the results easier 
+     to read at a glance (5 seconds or less);
 proc format;
-	value subgroup_id_fmt
-		31="Subgroup 31"
-		111="Subgroup 111"
-		;
+    value subgroup_id_fmt
+        31="Subgroup 31"
+        111="Subgroup 111"
+        ;
 
 proc means data = CAASP1516_analytic_file;
-				class subgroup_id;
-				var Mean_scale_score;
-				format subgroup_id subgroup_id_fmt.;
+                class subgroup_id;
+                var Mean_scale_score;
+                format subgroup_id subgroup_id_fmt.;
 run;
 title;
 footnote;
@@ -105,31 +106,31 @@ difference impact on different ethnicities"
 ;
 
 proc format;
-	value subgroup_id_fmt
-		31="Subgroup 31"
-		111="Subgroup 111"
-		200="Subgroup 200"
-		220="Subgroup 220"
-		201="Subgroup 201"
-		221="Subgroup 221"
-		202="Subgroup 202"
-		222="Subgroup 222"
-		203="Subgroup 203"
-		223="Subgroup 223"
-	    204="Subgroup 224"
-		224="Subgroup 224"
+    value subgroup_id_fmt
+        31="Subgroup 31"
+        111="Subgroup 111"
+        200="Subgroup 200"
+        220="Subgroup 220"
+        201="Subgroup 201"
+        221="Subgroup 221"
+        202="Subgroup 202"
+        222="Subgroup 222"
+        203="Subgroup 203"
+        223="Subgroup 223"
+        204="Subgroup 224"
+        224="Subgroup 224"
         205="Subgroup 225"
-		225="Subgroup 225"
-		206="Subgroup 206"
-		226="Subgroup 226"
-		207="Subgroup 207"
-		227="Subgroup 227"
-		;
+        225="Subgroup 225"
+        206="Subgroup 206"
+        226="Subgroup 226"
+        207="Subgroup 207"
+        227="Subgroup 227"
+        ;
 
 proc means data = CAASP1516_analytic_file;
-				class subgroup_id;
-				var Mean_scale_score;
-				format subgroup_id subgroup_id_fmt.;
+                class subgroup_id;
+                var Mean_scale_score;
+                format subgroup_id subgroup_id_fmt.;
 run;
 title;
 footnote;
@@ -163,23 +164,23 @@ further study on the correlationship between those two"
 ;
 
 proc format;
-	value subgroup_id_fmt
-		31="Subgroup 31"
-		111="Subgroup 111"
-		;
+    value subgroup_id_fmt
+        31="Subgroup 31"
+        111="Subgroup 111"
+        ;
 
 proc means data = CAASP1516_analytic_file;
-				class subgroup_id test_id;
-				where test_id = 1;
-				var Mean_scale_score;
-				format subgroup_id subgroup_id_fmt.;
+                class subgroup_id test_id;
+                where test_id = 1;
+                var Mean_scale_score;
+                format subgroup_id subgroup_id_fmt.;
 run;
 
 proc means data = CAASP1516_analytic_file;
-				class subgroup_id test_id;
-				where test_id = 2;
-				var Mean_scale_score;
-				format subgroup_id subgroup_id_fmt.;
+                class subgroup_id test_id;
+                where test_id = 2;
+                var Mean_scale_score;
+                format subgroup_id subgroup_id_fmt.;
 run;
 title;
 footnote;
